@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "1 - Create ApiLogicProject",
+            "type": "python",
+            "request": "launch",
+            "program": "api_logic_server_cli/cli.py",
+            "args": ["create","--project_name=../servers/ApiLogicProject","--db_url="],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "2 - RUN ApiLogicProject",
+            "type": "python",
+            "request": "launch",
+            "program": "${fileWorkspaceFolder}/../servers/ApiLogicProject/api_logic_server_run.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+.DS_Store
+/build/
+/dist/
+**/__pycache__
+*.egg-info
+venv/
+/tests/models.yaml
+/api_logic_server_cli/api_logic_server_info.yaml
+.idea/ApiLogicServer.iml

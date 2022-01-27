@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "5656:5656"
+    environment:
+      FLASK_RUN_PORT: 5656
+      SRA_UI_PATH: /app/multiapp/ui
+      ADMIN_DB: sqlite:////mount/admin.db
+      SECRET_KEY: SomeSecretInfoHere!!TBD
+    volumes:
+      - .:/mount
