@@ -6,8 +6,9 @@ services:
       - "5656:5656"
     environment:
       FLASK_RUN_PORT: 5656
-      SRA_UI_PATH: /app/multiapp/ui
+      SRA_UI_PATH: /app/ui
       ADMIN_DB: sqlite:////mount/admin.db
       SECRET_KEY: SomeSecretInfoHere!!TBD
+      PROJECTS_DIR: /mount
     volumes:
       - .:/mount

@@ -16,7 +16,7 @@ import signal
 from flask_login import UserMixin, LoginManager
 from flask import Flask, request, has_request_context, abort, g, url_for, current_app
 from flask_sqlalchemy import SQLAlchemy
-from safrs import SAFRSBase, SAFRSAPI, jsonapi_rpc, jsonapi_attr
+from safrs import SAFRSBase, SAFRSAPI, jsonapi_rpc, jsonapi_attr, UnAuthorizedError
 from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
 from pathlib import Path
@@ -24,6 +24,7 @@ from pathlib import Path
 db = SQLAlchemy()
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger()
+projects_dir = Path(os.environ.get("PROJECTS_DIR","")).resolve()
 
 
 class User(SAFRSBase, db.Model, UserMixin):
@@ -53,7 +54,8 @@ class User(SAFRSBase, db.Model, UserMixin):
             >> User.query.filter(User.username == 'admin').first().hash_password('newpass')
         """
         if login.current_user != self:
-            abort(403)
+            log.info("x"*4000)
+            raise UnAuthorizedError
         log.info(f"Changing password for {self}")
         self._password_hash = pwd_context.encrypt(password)
         return {"msg" : "password set"}
@@ -85,6 +87,8 @@ class User(SAFRSBase, db.Model, UserMixin):
         if user is None:
             user = cls.query.filter_by(username=username).one_or_none()
             if not user:
+                raise UnAuthorizedError
+
                 abort(403)
             result = user.verify_password(password)
             if result:
@@ -189,7 +193,8 @@ class Api(SAFRSBase, db.Model):
             proc_args += [f'{a}={v}']
         output += " ".join(proc_args)
         print(output)
-        process = subprocess.run(proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        process = subprocess.run(proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, cwd=projects_dir)
+        #process = subprocess.run(proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         output += str(process.stdout)
         output += "\n\n"
         output += str(process.stderr)
@@ -200,8 +205,18 @@ class Api(SAFRSBase, db.Model):
         return output
     
     @jsonapi_attr
-    def path(self):
+    def api_path(self):
+        """
+            description: server directory of the api logic project
+        """
         return f"{self.name}"
+
+    @jsonapi_attr
+    def path(self):
+        """
+            description: server directory of the api logic project
+        """
+        return f"{projects_dir / self.name}"
 
 def create_app(config_filename=None, host="localhost", port="5656", app_prefix="/admin"):
     app = Flask("demo_app")
