@@ -188,11 +188,10 @@ class Api(SAFRSBase, db.Model):
             "--port" : str(self.port),
             "--host" : self.hostname
         }
-        proc_args = ['ApiLogicServer','create']
+        proc_args = ['ApiLogicServer','create','--multi_api']
         for a, v in als_args.items():
             proc_args += [f'{a}={v}']
         output += " ".join(proc_args)
-        print(output)
         process = subprocess.run(proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, cwd=projects_dir)
         #process = subprocess.run(proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         output += str(process.stdout)

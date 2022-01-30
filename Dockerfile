@@ -6,7 +6,8 @@ RUN apk add --no-cache gcc musl-dev linux-headers libffi-dev curl tar
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 COPY . .
-WORKDIR ApiLogicServer
+RUN curl -L https://github.com/valhuber/ApiLogicServer/archive/master.tar.gz | tar xfz -
+WORKDIR ApiLogicServer-main
 RUN pip install -e .
 
 # admin-app frontend files : reactjs code and admin.yaml
