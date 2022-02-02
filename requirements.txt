@@ -16,7 +16,7 @@ python-dotenv
 email-validator
 LogicBank>=1.0.7
 PyMySQL
-# pyodbc==4.0.30
+pyodbc==4.0.30
 cryptography
 requests
 gunicorn
